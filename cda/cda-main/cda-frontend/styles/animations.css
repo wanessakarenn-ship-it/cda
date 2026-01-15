@@ -1,0 +1,14 @@
+/* Animação para preenchimento das barras de competência */
+@keyframes progress-fill {
+  from { width: 0; }
+  to { width: var(--progress-width); }
+}
+
+.animate-progress {
+  animation: progress-fill 1s ease-out forwards;
+}
+
+/* Efeito de hover nos itens da Sidebar */
+.nav-item-transition {
+  @apply transition-all duration-200 ease-in-out;
+}

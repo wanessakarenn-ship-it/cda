@@ -1,0 +1,117 @@
+
+
+1. Monitoramento de Progresso (Dashboard Administrativo)
+Esta consulta utiliza os novos status de avaliação para monitorar o ciclo.
+
+SQL
+
+SELECT
+    c.nome AS ciclo_nome,
+    COUNT(DISTINCT cc.colaborador_id) AS total_participantes,
+    COUNT(DISTINCT CASE WHEN a_auto.status = 'FINALIZADO' THEN cc.colaborador_id END) AS autoavaliacoes_concluidas,
+    COUNT(DISTINCT CASE WHEN a_gestor.status = 'FINALIZADO' THEN cc.colaborador_id END) AS avaliacoes_gestor_concluidas,
+    (COUNT(DISTINCT CASE WHEN a_gestor.status = 'FINALIZADO' THEN cc.colaborador_id END) * 100.0 / NULLIF(COUNT(DISTINCT cc.colaborador_id), 0))::numeric(5,2) AS percentual_conclusao_gestor
+FROM
+    public.ciclo_desempenho c
+JOIN
+    public.ciclo_colaborador cc ON c.id = cc.ciclo_id
+LEFT JOIN
+    public.avaliacao a_auto ON cc.id = a_auto.ciclo_colaborador_id AND a_auto.tipo = 'AUTOAVALIACAO'
+LEFT JOIN
+    public.avaliacao a_gestor ON cc.id = a_gestor.ciclo_colaborador_id AND a_gestor.tipo = 'GESTOR'
+WHERE
+    c.nome = 'Ciclo CDA 2026' -- Nome atualizado do ciclo
+GROUP BY
+    c.nome;
+
+2. Painel de Resultados (Matriz 9-Box Agregada)Extrai os quadrantes de potencial e desempenho consolidados após o cálculo do ciclo.SQLSELECT
+    nb.posicao_x_potencial AS potencial,
+    nb.posicao_y_desempenho AS desempenho,
+    COUNT(cc.colaborador_id) AS contagem_colaboradores
+FROM
+    public.nine_box nb
+JOIN
+    public.ciclo_colaborador cc ON nb.ciclo_colaborador_id = cc.id
+JOIN
+    public.ciclo_desempenho c ON cc.ciclo_id = c.id
+WHERE
+    c.nome = 'Ciclo CDA 2026'
+GROUP BY
+    nb.posicao_x_potencial, nb.posicao_y_desempenho
+ORDER BY
+    nb.posicao_y_desempenho DESC, nb.posicao_x_potencial ASC;
+
+3. Painel de Detalhes (Média por Competência e Categoria)Utiliza o novo campo categoria para segmentar a análise de gaps.SQLSELECT
+    CASE 
+        WHEN p.competencia_id IS NOT NULL THEN comp.nome 
+        WHEN p.meta_id IS NOT NULL THEN m.titulo 
+        ELSE 'N/A' 
+    END AS item_avaliacao,
+    comp.categoria AS categoria_competencia, -- Novo campo adicionado
+    AVG(p.nota) AS nota_media,
+    COUNT(p.id) AS total_avaliacoes
+FROM
+    public.pontuacao p
+JOIN
+    public.avaliacao a ON p.avaliacao_id = a.id
+JOIN
+    public.ciclo_colaborador cc ON a.ciclo_colaborador_id = cc.id
+JOIN
+    public.ciclo_desempenho cd ON cc.ciclo_id = cd.id
+LEFT JOIN
+    public.competencia comp ON p.competencia_id = comp.id
+LEFT JOIN
+    public.meta m ON p.meta_id = m.id
+WHERE
+    cd.nome = 'Ciclo CDA 2026'
+    AND a.status = 'FINALIZADO'
+    AND a.tipo = 'GESTOR'
+GROUP BY
+    item_avaliacao, comp.categoria
+ORDER BY
+    comp.categoria, nota_media DESC;
+
+4. Histórico de Evolução (Utilizado na ColaboradorPage.tsx)Consulta que alimenta o gráfico de evolução histórica e elegibilidade.SQLSELECT
+    c.nome AS nome_ciclo,
+    cc.status_experiencia,
+    nb.posicao_y_desempenho || ' x ' || nb.posicao_x_potencial AS nine_box_resultado,
+    nb.score_final_merito AS score_final,
+    nb.elegivel_carreira AS elegibilidade, -- Status real de carreira
+    nb.data_calculo
+FROM
+    public.colaborador colab
+JOIN
+    public.ciclo_colaborador cc ON colab.id = cc.colaborador_id
+JOIN
+    public.ciclo_desempenho c ON cc.ciclo_id = c.id
+LEFT JOIN
+    public.nine_box nb ON cc.id = nb.ciclo_colaborador_id
+WHERE
+    colab.matricula = 'MAT002' -- Ex: Ana García Fernández
+ORDER BY
+    c.data_inicio ASC;
+    
+5. Painel do Gestor (Status da Equipe Direta)Focado no controle de pendências do gestor para o ciclo atual.SQLSELECT
+    colab_equipe.nome AS colaborador,
+    cargo.titulo AS cargo,
+    a_auto.status AS status_autoavaliacao,
+    a_gestor.status AS status_avaliacao_gestor
+FROM
+    public.colaborador colab_gestor
+JOIN
+    public.colaborador colab_equipe ON colab_gestor.id = colab_equipe.gestor_id
+JOIN
+    public.cargo ON colab_equipe.cargo_id = cargo.id
+JOIN
+    public.ciclo_colaborador cc ON colab_equipe.id = cc.colaborador_id
+JOIN
+    public.ciclo_desempenho cd ON cc.ciclo_id = cd.id
+LEFT JOIN
+    public.avaliacao a_auto ON cc.id = a_auto.ciclo_colaborador_id AND a_auto.tipo = 'AUTOAVALIACAO'
+LEFT JOIN
+    public.avaliacao a_gestor ON cc.id = a_gestor.ciclo_colaborador_id AND a_gestor.tipo = 'GESTOR'
+WHERE
+    colab_gestor.id = 1 -- ID do Gestor logado
+    AND cd.nome = 'Ciclo CDA 2026'
+ORDER BY
+    colab_equipe.nome;

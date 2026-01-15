@@ -1,0 +1,33 @@
+Entidades Base e Acesso
+As entidades base são PERFIL, USUARIO, CARGO e COLABORADOR.
+
+PERFIL (PK: id): Define o nível de acesso (Admin, Gestor, Colaborador).
+USUARIO (PK: id): Armazena dados de login (email, senha). Possui uma FK para PERFIL (perfil_id), representando uma relação de Muitos para Um (N:1).
+CARGO (PK: id): Padroniza os títulos e descrições das funções dentro da organização.
+COLABORADOR (PK: id): Representa o indivíduo no sistema. Possui uma FK para USUARIO (usuario_id) para vincular o acesso (relação 1:1). Também possui uma FK para CARGO (cargo_id) e uma FK recursiva para ele mesmo (gestor_id), representando a relação de Liderança (1:N).
+
+Entidades de Ciclo e Participação
+O CICLO_DESEMPENHO e o CICLO_COLABORADOR gerenciam os períodos de avaliação.
+
+CICLO_DESEMPENHO (PK: id): Define o período da avaliação e quem o criou (criado_por).
+CICLO_COLABORADOR (PK: id): Tabela de junção N:M que registra a participação de um colaborador em um ciclo específico. Possui FKs para CICLO_DESEMPENHO (ciclo_id) e COLABORADOR (colaborador_id). Atributos importantes incluem recomendacao_experiencia e status_experiencia. A combinação de (ciclo_id, colaborador_id) possui uma restrição de unicidade (UNIQUE).
+
+Entidades de Avaliação e Mérito
+Gerenciam a coleta de notas e competências durante o processo.
+
+AVALIACAO (PK: id): O cabeçalho de cada avaliação (AUTOAVALIACAO ou GESTOR). Possui uma FK para CICLO_COLABORADOR (ciclo_colaborador_id) e para o COLABORADOR avaliador (avaliador_id). Controla o status (PENDENTE, FINALIZADO) e a pontuacao_merito global.
+COMPETENCIA (PK: id): Item de avaliação com atributo categoria (Geral ou Específica) e peso.
+META (PK: id): Item de avaliação com peso e prazo.
+PONTUACAO (PK: id): (UNIFICADO) Registra a nota detalhada para um único item. Possui uma FK para AVALIACAO (avaliacao_id) e duas FKs opcionais (competencia_id e meta_id), garantindo via restrição CHECK que apenas uma seja preenchida.
+
+Entidades de Resultado e Progressão
+Gerenciam o desfecho do ciclo e o desenvolvimento do colaborador.
+
+NINE_BOX (PK: id): Armazena o resultado final do posicionamento (Posição X e Y), o score_final_merito e o status elegivel_carreira. Possui uma FK para CICLO_COLABORADOR (ciclo_colaborador_id).
+PLANO_CARREIRA (PK: id): Define os planos de desenvolvimento disponíveis.
+COLABORADOR_TRILHA (PK: id): Tabela de junção N:M que registra as trilhas liberadas. Possui FKs para PLANO_CARREIRA (plano_id) e COLABORADOR (colaborador_id).
+Resumo das Correções Lógicas Aplicadas
+Padronização de Nomenclatura: Chaves primárias simplificadas para id e campos de data/autoria seguindo o padrão camelCase no backend e snake_case no banco.
+Segurança (LGPD): O campo senha_hash foi simplificado para senha na tabela USUARIO para alinhar com a nova lógica de autenticação.
+Unificação da Pontuação: A estrutura unificada em PONTUACAO elimina a necessidade de tabelas separadas para metas e competências, simplificando as consultas de performance.
+Elegibilidade Automatizada: A inclusão de elegivel_carreira diretamente no NINE_BOX permite a automação da liberação de trilhas pós-ciclo.

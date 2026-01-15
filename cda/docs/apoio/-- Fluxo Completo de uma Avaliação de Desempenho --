@@ -1,0 +1,53 @@
+Fluxo Completo de uma Avaliação de Desempenho (CDA 2026)
+O fluxo de dados do sistema percorre as entidades de forma lógica, desde o planejamento administrativo até a liberação de trilhas de desenvolvimento.
+
+1. Definição do Contexto (O Início do Ciclo)
+O processo começa com o planejamento do período avaliativo e a definição do público-alvo.
+
+Entidades Envolvidas: CICLO_DESEMPENHO, USUARIO, COLABORADOR, CICLO_COLABORADOR.
+
+Ação do Administrador: Um usuário com perfil de "Administrador" cria um registro em CICLO_DESEMPENHO (Ex: "Ciclo CDA 2026"), definindo as datas de início e fim.
+
+Associação de Participantes: O sistema ou o RH vincula os COLABORADORES ativos ao ciclo.
+
+Instância de Participação: Para cada participante, é gerado um registro na tabela CICLO_COLABORADOR, que serve como o "vínculo oficial" do colaborador com aquele ciclo específico.
+
+2. Estruturação da Avaliação (Itens a serem pontuados)
+Define-se o que será medido, utilizando as novas categorias e pesos.
+
+Entidades Envolvidas: COMPETENCIA, META.
+
+Configuração de Itens: O RH registra as COMPETENCIAS, definindo se são de categoria "Geral" ou "Específica" e seus respectivos pesos.
+
+Definição de Objetivos: As METAS são cadastradas com títulos, pesos e prazos específicos.
+
+3. Coleta de Dados (O Ato de Avaliar)
+Fase de execução onde as notas e comentários são registrados.
+
+Entidades Envolvidas: AVALIACAO, PONTUACAO.
+
+Criação da Avaliação: Para cada CICLO_COLABORADOR, são gerados registros na tabela AVALIACAO com o tipo correspondente (Ex: "AUTOAVALIACAO" ou "GESTOR") e status inicial "PENDENTE".
+
+Registro de Notas (Unificado): O avaliador insere as notas, gerando registros na tabela única de PONTUACAO.
+
+Regra de Negócio: Cada linha de PONTUACAO associa-se a uma AVALIACAO e deve obrigatoriamente apontar para uma COMPETENCIA ou para uma META, registrando a nota, o comentario e o peso_aplicado no momento.
+
+4. Processamento e Resultado (O 9-Box)
+Consolidação dos dados coletados para gerar inteligência de talentos.
+
+Entidades Envolvidas: AVALIACAO, NINE_BOX.
+
+Cálculo de Mérito: O sistema processa as avaliações com status "FINALIZADO", agregando os valores da tabela PONTUACAO.
+
+Geração do Score: São calculados o score_competencias e score_metas para compor o score_final_merito.
+
+Matriz Talentos: Com base nos scores, o sistema cria um registro em NINE_BOX, definindo a posicao_x_potencial e posicao_y_desempenho. O sistema também valida automaticamente o campo elegivel_carreira.
+
+5. Desenvolvimento (Pós-Ciclo)
+O encerramento do ciclo impulsiona a evolução do colaborador.
+
+Entidades Envolvidas: NINE_BOX, PLANO_CARREIRA, COLABORADOR_TRILHA.
+
+Liberação de Trilha: Se o colaborador possuir elegivel_carreira = TRUE no NINE_BOX, ele torna-se apto a ingressar em um PLANO_CARREIRA.
+
+Engajamento: É criado um registro em COLABORADOR_TRILHA, marcando a data de início e o status (Ex: "LIBERADO"), permitindo que o colaborador visualize seu plano de desenvolvimento no frontend.

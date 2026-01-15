@@ -1,0 +1,84 @@
+DML 1: Colaboradores Adicionais (Começa após MAT003)
+SQL
+
+-- Novo Gestor (Supervisor de Vendas)
+INSERT INTO public.perfil (id, nome) VALUES (4, 'Supervisor');
+INSERT INTO public.cargo (id, titulo) VALUES (4, 'Supervisor de Vendas');
+
+-- Campo atualizado: senha_hash -> senha
+INSERT INTO public.usuario (id, email, nome, perfil_id, senha) VALUES
+(13, 'daniel.evo@empresa.com.br', 'Daniel Evo', 2, 'hash_daniel'),
+(14, 'eliza.lima@empresa.com.br', 'Eliza Lima', 3, 'hash_eliza'),
+(15, 'fernanda.nunes@empresa.com.br', 'Fernanda Nunes', 3, 'hash_fernanda');
+
+-- Colaboradores
+INSERT INTO public.colaborador (id, usuario_id, nome, cargo_id, gestor_id, matricula, ativo) VALUES
+(103, 13, 'Daniel Evo', 4, 100, 'MAT004', TRUE), -- Reporta à Ana Gomes (100)
+(104, 14, 'Eliza Lima', 3, 100, 'MAT005', TRUE), -- Reporta à Ana Gomes (100)
+(105, 15, 'Fernanda Nunes', 4, 103, 'MAT006', TRUE); -- Reporta a Daniel Evo (103)
+
+-- Atualiza sequências
+SELECT setval('public.perfil_id_seq', 4, true);
+SELECT setval('public.cargo_id_seq', 4, true);
+SELECT setval('public.usuario_id_seq', 15, true);
+SELECT setval('public.colaborador_id_seq', 105, true);
+DML 2: Ciclos Adicionais (Começa após o ID 1)
+SQL
+
+-- Ciclo 2: Passado e Fechado
+INSERT INTO public.ciclo_desempenho (id, nome, data_inicio, data_fim, descricao, criado_por) VALUES
+(2, 'Ciclo 2024 - H1', '2024-01-01', '2024-06-30', 'Avaliação do primeiro semestre de 2024.', 10);
+
+-- Ciclo 3: Futuro (Aberto para planejamento)
+INSERT INTO public.ciclo_desempenho (id, nome, data_inicio, data_fim, descricao, criado_por) VALUES
+(3, 'Ciclo 2026 - Planejamento', '2026-01-01', '2026-12-31', 'Planejamento de Metas para o próximo ano.', 10);
+
+-- Atualiza sequência
+SELECT setval('public.ciclo_desempenho_id_seq', 3, true);
+DML 3.A: Itens de Avaliação Adicionais (Com Categorias)
+SQL
+
+-- Competências com novo campo: categoria
+INSERT INTO public.competencia (id, nome, descricao, categoria, peso) VALUES
+(12, 'Adaptabilidade', 'Capacidade de lidar com mudanças e incertezas.', 'Geral', 0.8),
+(13, 'Liderança Situacional', 'Uso de estilos de liderança apropriados ao contexto.', 'Específica', 1.2);
+
+-- Metas
+INSERT INTO public.meta (id, titulo, descricao, peso, prazo) VALUES
+(22, 'Crescimento de Vendas 5%', 'Atingir 5% de crescimento no faturamento do setor.', 2.5, '2024-06-30'),
+(23, 'Lançamento de Produto X', 'Lançar o novo produto X no mercado.', 1.8, '2026-03-01');
+
+SELECT setval('public.competencia_id_seq', 13, true);
+SELECT setval('public.meta_id_seq', 23, true);
+DML 3.B: Participação nos Ciclos e Avaliações
+SQL
+
+-- Participação nos Ciclos (Status atualizados para FINALIZADO conforme DDL)
+INSERT INTO public.ciclo_colaborador (id, ciclo_id, colaborador_id, status_experiencia) VALUES
+(1002, 2, 101, 'FINALIZADO'), -- Bruce (2024)
+(1003, 2, 102, 'FINALIZADO'), -- Carla (2024)
+(1004, 2, 103, 'FINALIZADO'), -- Daniel (2024)
+(1005, 1, 103, 'EM ANDAMENTO'), -- Daniel (2025)
+(1006, 1, 104, 'EM ANDAMENTO'), -- Eliza (2025)
+(1007, 1, 105, 'EM ANDAMENTO'), -- Fernanda (2025)
+(1008, 3, 101, 'PLANEJAMENTO'), -- Bruce (2026)
+(1009, 3, 105, 'PLANEJAMENTO'); -- Fernanda (2026)
+
+-- Avaliação Fechada (Bruce no Ciclo 2)
+INSERT INTO public.avaliacao (id, ciclo_colaborador_id, avaliador_id, tipo, status, data_envio) VALUES
+(202, 1002, 101, 'AUTOAVALIACAO', 'FINALIZADO', '2024-06-20'),
+(203, 1002, 100, 'GESTOR', 'FINALIZADO', '2024-07-05');
+
+-- Pontuações (Tabela Unificada)
+INSERT INTO public.pontuacao (id, avaliacao_id, competencia_id, meta_id, nota, comentario) VALUES
+(304, 203, 13, NULL, 4.5, 'Excelente adaptação no projeto inicial.'),
+(305, 203, NULL, 22, 5.0, 'Ferramentas entregues permitiram crescimento de 6%.');
+
+-- Resultado NINE_BOX
+INSERT INTO public.nine_box (id, ciclo_colaborador_id, posicao_x_potencial, posicao_y_desempenho, score_final_merito, elegivel_carreira) VALUES
+(11, 1002, 'Alto', 'Alto', 4.9, TRUE);
+
+SELECT setval('public.ciclo_colaborador_id_seq', 1009, true);
+SELECT setval('public.avaliacao_id_seq', 203, true);
+SELECT setval('public.pontuacao_id_seq', 305, true);
+SELECT setval('public.nine_box_id_seq', 11, true);

@@ -1,0 +1,102 @@
+1. Entidades e Atributos Principais
+PERFIL
+Chave Primária (PK): id
+Atributos Importantes: nome (Admin, Gestor, Colaborador), descricao
+Relações Chave: Relaciona-se com USUARIO
+
+CARGO
+Chave Primária (PK): id
+Atributos Importantes: titulo, descricao
+Relações Chave: Relaciona-se com COLABORADOR
+
+USUARIO
+Chave Primária (PK): id
+Atributos Importantes: email, nome, perfil_id (FK), senha (campo atualizado)
+Relações Chave: Relaciona-se com PERFIL e COLABORADOR
+
+COLABORADOR
+Chave Primária (PK): id
+Atributos Importantes: nome, matricula, usuario_id (FK), cargo_id (FK), gestor_id (FK - Recursiva)
+Relações Chave: Relaciona-se com USUARIO, CARGO e CICLO_COLABORADOR
+
+CICLO_DESEMPENHO
+Chave Primária (PK): id
+Atributos Importantes: nome, data_inicio, data_fim, criado_por (FK)
+Relações Chave: Relaciona-se com CICLO_COLABORADOR
+
+CICLO_COLABORADOR
+Chave Primária (PK): id
+Atributos Importantes: ciclo_id (FK), colaborador_id (FK), recomendacao_experiencia
+Relações Chave: Relaciona-se com AVALIACAO e NINE_BOX
+
+COMPETENCIA
+Chave Primária (PK): id
+Atributos Importantes: nome, descricao, categoria (Geral/Específica), peso
+Relações Chave: Relaciona-se com PONTUACAO
+
+META
+Chave Primária (PK): id
+Atributos Importantes: titulo, descricao, peso, prazo
+Relações Chave: Relaciona-se com PONTUACAO
+
+AVALIACAO
+Chave Primária (PK): id
+Atributos Importantes: ciclo_colaborador_id (FK), avaliador_id (FK), tipo (AUTO/GESTOR), status
+Relações Chave: Relaciona-se com PONTUACAO
+
+PONTUACAO
+Chave Primária (PK): id
+Atributos Importantes: avaliacao_id (FK), competencia_id (FK Opcional), meta_id (FK Opcional), nota, peso_aplicado
+Relações Chave: Entidade N:M que unifica itens de Avaliação (Competências ou Metas)
+
+NINE_BOX
+Chave Primária (PK): id
+Atributos Importantes: ciclo_colaborador_id (FK), posicao_x_potencial, posicao_y_desempenho, score_final_merito, elegivel_carreira
+Relações Chave: Relaciona-se com CICLO_COLABORADOR
+
+PLANO_CARREIRA
+Chave Primária (PK): id
+Atributos Importantes: nome, descricao, versao, publicado
+Relações Chave: Relaciona-se com COLABORADOR_TRILHA
+
+COLABORADOR_TRILHA
+Chave Primária (PK): id
+Atributos Importantes: plano_id (FK), colaborador_id (FK), status, data_inicio
+Relações Chave: Entidade N:M entre Colaborador e Plano de Carreira
+
+2. Detalhamento das Relações (Cardinalidade)
+Participação no Ciclo
+Entidades: COLABORADOR - CICLO_DESEMPENHO
+Cardinalidade: N:M (Implementada via CICLO_COLABORADOR)
+Justificativa: Um colaborador participa de múltiplos ciclos ao longo dos anos, e um ciclo abrange diversos colaboradores.
+
+Liderança
+Entidades: COLABORADOR - COLABORADOR (Recursiva)
+Cardinalidade: 1:N
+Justificativa: Um gestor lidera muitos colaboradores via gestor_id, mas cada colaborador reporta a um único gestor direto.
+
+Processo Avaliativo
+Entidades: CICLO_COLABORADOR - AVALIACAO
+Cardinalidade: 1:N
+Justificativa: Dentro de um ciclo, o colaborador possui sua autoavaliação e a avaliação do seu gestor.
+
+Itens da Avaliação
+Entidades: AVALIACAO - COMPETENCIA / META
+Cardinalidade: N:M (Implementada via PONTUACAO)
+Justificativa: Uma avaliação pontua diversas competências e metas; uma competência ou meta é avaliada em múltiplos processos.
+
+Resultado Consolidado
+Entidades: CICLO_COLABORADOR - NINE_BOX
+Cardinalidade: 1:1 (Único por ciclo)
+Justificativa: Cada participação em ciclo gera um único resultado final de posicionamento Nine Box e elegibilidade de carreira.
+
+Acesso e Segurança
+Entidades: USUARIO - PERFIL
+Cardinalidade: N:1
+Justificativa: Muitos usuários compartilham as mesmas permissões definidas por um único Perfil (Admin, Gestor ou Colaborador).
+
+Estrutura Organizacional
+Entidades: COLABORADOR - CARGO
+Cardinalidade: N:1
+Justificativa: Muitos colaboradores podem ocupar o mesmo título de cargo dentro da empresa.
+
