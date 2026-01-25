@@ -1,0 +1,51 @@
+/* Troque o @import pelo padrão da v3 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =======================================================
+   BASE
+   ======================================================= */
+@layer base {
+  html,
+  body {
+    /* @apply funciona perfeitamente aqui na v3 */
+    @apply bg-slate-50 text-slate-900 antialiased;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  /* Scrollbar customizada (WebKit) */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full transition-colors;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-300;
+  }
+}
+
+/* =======================================================
+   COMPONENTES REUTILIZÁVEIS
+   ======================================================= */
+@layer components {
+  /* Card padrão com estética clean (glass-like) */
+  .glass-card {
+    @apply bg-white border border-slate-200 shadow-sm rounded-3xl;
+  }
+
+  /* Badge de status (Finalizado / Pendente / etc.) */
+  .badge {
+    @apply inline-flex items-center text-[10px] font-bold
+           px-2 py-0.5 rounded-full border
+           uppercase tracking-wider;
+  }
+}
