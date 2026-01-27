@@ -3,22 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDA 2026 | Gestão de Desempenho</title>
+    <title>CDA 2026 | Sistema de Desempenho</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+        .page { display: none; }
+        .page.active { display: block; }
+        .nav-link.active { background: #f0f4ff; color: #4f46e5; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
-
-    <header class="lg:hidden p-4 bg-white border-b flex justify-between items-center">
-        <div class="font-black text-indigo-600 tracking-tighter text-xl">CDA <span class="text-slate-400">2026</span></div>
-        <button class="p-2 bg-slate-100 rounded-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-        </button>
-    </header>
 
     <div class="flex">
         <aside class="hidden lg:flex w-72 h-screen sticky top-0 bg-white border-r border-slate-200 p-8 flex-col gap-10">
@@ -26,144 +21,106 @@
             
             <nav class="flex flex-col gap-2 flex-1">
                 <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Principal</p>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-indigo-50 text-indigo-600 rounded-2xl font-bold text-sm transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                <button onclick="showPage('dashboard')" class="nav-link active flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all w-full text-left">
                     Dashboard
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold text-sm transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </button>
+                <button onclick="showPage('colaboradores')" class="nav-link flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold text-sm transition-all w-full text-left">
                     Colaboradores
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold text-sm transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </button>
+                <button onclick="showPage('ciclos')" class="nav-link flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold text-sm transition-all w-full text-left">
                     Ciclos
-                </a>
-
-                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-6 mb-2">Configurações</p>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold text-sm transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
-                    Matriz Nine Box
-                </a>
+                </button>
             </nav>
 
-            <div class="bg-slate-900 rounded-3xl p-6 text-white">
-                <p class="text-[9px] font-black uppercase opacity-50 mb-1">Usuário Atual</p>
-                <p class="text-sm font-bold">Admin Central</p>
-                <button class="mt-4 text-[10px] font-black text-rose-400 uppercase tracking-widest hover:text-rose-300 transition-colors">Sair do Sistema</button>
+            <div class="bg-slate-900 rounded-3xl p-6 text-white text-center">
+                <p class="text-[10px] font-black uppercase opacity-50 mb-1">Status do Backend</p>
+                <p class="text-xs font-bold text-indigo-400">Preparando Migração</p>
             </div>
         </aside>
 
         <main class="flex-1 p-6 lg:p-12 max-w-7xl mx-auto">
             
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-                <div>
-                    <h1 class="text-3xl font-black text-slate-800 tracking-tight">Painel Estratégico</h1>
-                    <p class="text-slate-500 font-medium">Bem-vindo à gestão do ciclo de desempenho 2026.</p>
+            <div id="dashboard" class="page active">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+                    <div>
+                        <h1 class="text-3xl font-black text-slate-800 tracking-tight">Painel Estratégico</h1>
+                        <p class="text-slate-500 font-medium">Gestão do ciclo de desempenho 2026.</p>
+                    </div>
                 </div>
-                <div class="flex gap-3">
-                    <button class="px-6 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-black uppercase tracking-widest hover:shadow-lg transition-all active:scale-95">Importar CSV</button>
-                    <button class="px-6 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all active:scale-95">Novo Ciclo</button>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Colaboradores</p>
+                        <h3 class="text-3xl font-black text-slate-800">1,284</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Avaliações Concluídas</p>
+                        <h3 class="text-3xl font-black text-slate-800">85%</h3>
+                    </div>
+                    <div class="bg-indigo-600 p-6 rounded-[2rem] shadow-xl text-white">
+                        <p class="text-[10px] font-black text-indigo-200 uppercase tracking-widest">Status do Ciclo</p>
+                        <h3 class="text-xl font-black">ATIVO: 2026 Q1</h3>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    </div>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Colaboradores</p>
-                    <h3 class="text-3xl font-black text-slate-800">1,284</h3>
-                </div>
-                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-                    <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    </div>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Avaliações Concluídas</p>
-                    <h3 class="text-3xl font-black text-slate-800">85%</h3>
-                </div>
-                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-                    <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-                    </div>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pendências RH</p>
-                    <h3 class="text-3xl font-black text-slate-800">12</h3>
-                </div>
-                <div class="bg-indigo-600 p-6 rounded-[2rem] shadow-xl shadow-indigo-100 text-white">
-                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4 text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/><path d="M2 12h20"/><path d="m5 7-3 5 3 5"/><path d="m19 7 3 5-3 5"/></svg>
-                    </div>
-                    <p class="text-[10px] font-black text-indigo-200 uppercase tracking-widest">Status do Ciclo</p>
-                    <h3 class="text-xl font-black">ATIVO: 1T 2026</h3>
-                </div>
-            </div>
-
-            <section class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
-                <div class="p-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
-                    <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest">Ciclos de Desempenho Recentes</h2>
-                    <span class="px-3 py-1 bg-indigo-100 text-indigo-600 text-[10px] font-black rounded-full uppercase">PostgreSQL Link</span>
-                </div>
-                <div class="overflow-x-auto">
+            <div id="colaboradores" class="page">
+                <h1 class="text-3xl font-black text-slate-800 mb-6">Gestão de Colaboradores</h1>
+                <div class="bg-white rounded-[2rem] border border-slate-100 overflow-hidden shadow-sm">
                     <table class="w-full text-left">
                         <thead>
                             <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
-                                <th class="px-8 py-5">Nome do Ciclo</th>
-                                <th class="px-8 py-5">Período</th>
+                                <th class="px-8 py-5">Nome</th>
+                                <th class="px-8 py-5">Cargo</th>
                                 <th class="px-8 py-5">Status</th>
-                                <th class="px-8 py-5 text-right">Ações</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50">
-                            <tr class="group hover:bg-slate-50/50 transition-all">
-                                <td class="px-8 py-6">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-xs">26</div>
-                                        <p class="text-sm font-bold text-slate-700">Ciclo Estratégico 2026 - Q1</p>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-6 text-xs font-medium text-slate-500">01/01/2026 — 31/03/2026</td>
-                                <td class="px-8 py-6">
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-full uppercase">
-                                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                                        Ativo
-                                    </span>
-                                </td>
-                                <td class="px-8 py-6 text-right">
-                                    <button class="text-slate-300 hover:text-indigo-600 transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-                                    </button>
-                                </td>
+                            <tr>
+                                <td class="px-8 py-6 font-bold">Ana Garcia</td>
+                                <td class="px-8 py-6 text-slate-500 text-sm">Analista de Produto</td>
+                                <td class="px-8 py-6"><span class="bg-emerald-50 text-emerald-600 text-[10px] font-black px-3 py-1 rounded-full uppercase">Ativo</span></td>
                             </tr>
-                            <tr class="group hover:bg-slate-50/50 transition-all">
-                                <td class="px-8 py-6">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 font-bold text-xs">25</div>
-                                        <p class="text-sm font-bold text-slate-700">Ciclo de Talentos 2025 - Final</p>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-6 text-xs font-medium text-slate-500">01/10/2025 — 31/12/2025</td>
-                                <td class="px-8 py-6">
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-black rounded-full uppercase">
-                                        Arquivado
-                                    </span>
-                                </td>
-                                <td class="px-8 py-6 text-right">
-                                    <button class="text-slate-300 hover:text-indigo-600 transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-                                    </button>
-                                </td>
+                            <tr>
+                                <td class="px-8 py-6 font-bold">Carlos Mendes</td>
+                                <td class="px-8 py-6 text-slate-500 text-sm">Desenvolvedor Backend</td>
+                                <td class="px-8 py-6"><span class="bg-emerald-50 text-emerald-600 text-[10px] font-black px-3 py-1 rounded-full uppercase">Ativo</span></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            </section>
+            </div>
+
+            <div id="ciclos" class="page">
+                <h1 class="text-3xl font-black text-slate-800 mb-6">Configuração de Ciclos</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-8 rounded-[2rem] border-2 border-indigo-500">
+                        <h3 class="text-lg font-black mb-2">Ciclo Estratégico 2026</h3>
+                        <p class="text-sm text-slate-500 mb-4">Vigente: Jan - Mar 2026</p>
+                        <span class="text-xs font-black text-indigo-600 uppercase tracking-widest">Ativo no PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
 
         </main>
     </div>
 
-    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 glass border border-indigo-100 px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-4 animate-bounce">
-        <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
-        <p class="text-[10px] font-black text-indigo-700 uppercase tracking-widest">Camada de Segurança RLS Ativada no PostgreSQL</p>
-    </div>
+    <script>
+        function showPage(pageId) {
+            // Esconder todas as páginas
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            // Mostrar a página clicada
+            document.getElementById(pageId).classList.add('active');
 
+            // Atualizar estilo dos botões na sidebar
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active', 'text-indigo-600');
+                link.classList.add('text-slate-500');
+            });
+            event.currentTarget.classList.add('active', 'text-indigo-600');
+        }
+    </script>
 </body>
 </html>
