@@ -1,0 +1,10 @@
+const token = jwt.sign(
+  {
+    id: usuario.id,
+    perfil: usuario.perfil,
+  },
+  process.env.JWT_SECRET as jwt.Secret,
+  {
+    expiresIn: process.env.JWT_EXPIRES_IN as jwt.SignOptions['expiresIn'],
+  }
+);

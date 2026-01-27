@@ -1,0 +1,355 @@
+Modelos de Entidades do Sistema de Desempenho (CDA 2026)
+
+Este documento descreve os modelos de dados que compõem o sistema de Gestão do Ciclo de Desempenho, organizados por domínio funcional.
+
+I. Modelos de Base e Acesso
+Entidade: PERFIL
+
+Finalidade:
+Define os níveis de acesso e permissões do sistema (ex.: Administrador, Gestor, Colaborador).
+
+Atributos:
+
+id (PK)
+
+nome (Único)
+
+descricao
+
+created_at
+
+updated_at
+
+Entidade: CARGO
+
+Finalidade:
+Descreve a posição hierárquica ou função do colaborador na organização.
+
+Atributos:
+
+id (PK)
+
+titulo (Único)
+
+descricao
+
+created_at
+
+updated_at
+
+Entidade: USUARIO
+
+Finalidade:
+Armazena as credenciais de autenticação e vincula o usuário a um perfil de acesso.
+
+Atributos:
+
+id (PK)
+
+email (Único)
+
+nome
+
+perfil_id (FK → PERFIL)
+
+senha (ou senha_hash, conforme estratégia de segurança adotada)
+
+created_at
+
+updated_at
+
+Entidade: COLABORADOR
+
+Finalidade:
+Entidade central do sistema. Representa a pessoa avaliada, conectando login, cargo e hierarquia organizacional.
+
+Atributos:
+
+id (PK)
+
+usuario_id (FK → USUARIO, Único)
+
+nome
+
+cargo_id (FK → CARGO)
+
+gestor_id (FK recursiva → COLABORADOR)
+
+matricula (Única, obrigatória)
+
+ativo
+
+created_at
+
+updated_at
+
+Entidade: COLABORADOR_IMPORT
+
+Finalidade:
+Tabela de staging utilizada para processamento e validação de dados importados (ex.: CSV).
+
+Atributos:
+
+id (PK)
+
+matricula
+
+nome_completo
+
+email_corporativo
+
+nome_cargo
+
+data_admissao
+
+matricula_gestor
+
+status_processamento
+
+mensagem_erro
+
+data_registro
+
+updated_at
+
+II. Modelos de Ciclo e Participação
+Entidade: CICLO_DESEMPENHO
+
+Finalidade:
+Define o período oficial de avaliação de desempenho no sistema.
+
+Atributos:
+
+id (PK)
+
+nome (Único)
+
+data_inicio
+
+data_fim
+
+descricao
+
+criado_por (FK → USUARIO)
+
+created_at
+
+updated_at
+
+Entidade: CICLO_COLABORADOR
+
+Finalidade:
+Tabela de junção N:M que registra a participação de um colaborador em um ciclo específico.
+
+Atributos:
+
+id (PK)
+
+ciclo_id (FK → CICLO_DESEMPENHO)
+
+colaborador_id (FK → COLABORADOR)
+
+recomendacao_experiencia
+
+status_experiencia
+
+created_at
+
+updated_at
+
+Restrição:
+
+(ciclo_id, colaborador_id) deve ser ÚNICO
+
+III. Modelos de Itens e Avaliação
+Entidade: COMPETENCIA
+
+Finalidade:
+Define itens de avaliação baseados em comportamentos, habilidades técnicas e atitudes.
+
+Atributos:
+
+id (PK)
+
+nome (Único)
+
+descricao
+
+peso
+
+created_at
+
+updated_at
+
+Entidade: META
+
+Finalidade:
+Define itens de avaliação orientados a resultados e objetivos (KPIs / OKRs).
+
+Atributos:
+
+id (PK)
+
+titulo
+
+descricao
+
+peso
+
+prazo
+
+created_at
+
+updated_at
+
+Entidade: AVALIACAO
+
+Finalidade:
+Representa o cabeçalho de uma avaliação específica dentro de um ciclo (ex.: Autoavaliação, Avaliação do Gestor).
+
+Atributos:
+
+id (PK)
+
+ciclo_colaborador_id (FK → CICLO_COLABORADOR)
+
+avaliador_id (FK → COLABORADOR)
+
+tipo (ex.: AUTOAVALIACAO, GESTOR)
+
+status
+
+pontuacao_merito
+
+data_envio
+
+comentario
+
+created_at
+
+updated_at
+
+Restrição:
+
+(ciclo_colaborador_id, avaliador_id, tipo) deve ser ÚNICO
+
+Entidade: PONTUACAO
+
+Finalidade:
+Registra o detalhe da nota e feedback atribuído a uma Competência OU Meta dentro de uma avaliação.
+
+Atributos:
+
+id (PK)
+
+avaliacao_id (FK → AVALIACAO)
+
+competencia_id (FK → COMPETENCIA, opcional)
+
+meta_id (FK → META, opcional)
+
+nota (Obrigatória)
+
+comentario
+
+peso_aplicado
+
+created_at
+
+updated_at
+
+Restrição:
+
+Deve preencher competencia_id OU meta_id, nunca ambos
+
+IV. Modelos de Resultado e Carreira
+Entidade: NINE_BOX
+
+Finalidade:
+Armazena o resultado final do colaborador na matriz 9-Box ao término do ciclo.
+
+Atributos:
+
+id (PK)
+
+ciclo_colaborador_id (FK → CICLO_COLABORADOR, Único)
+
+posicao_x_potencial
+
+posicao_y_desempenho
+
+score_competencias
+
+score_metas
+
+score_final_merito
+
+elegivel_carreira
+
+data_calculo
+
+created_at
+
+updated_at
+
+Entidade: PLANO_CARREIRA
+
+Finalidade:
+Catálogo de planos de desenvolvimento e trilhas de progressão profissional.
+
+Atributos:
+
+id (PK)
+
+nome (Único)
+
+descricao
+
+versao
+
+publicado
+
+created_at
+
+updated_at
+
+Entidade: COLABORADOR_TRILHA
+
+Finalidade:
+Relaciona um colaborador a um plano de carreira, registrando o status da liberação e progresso.
+
+Atributos:
+
+id (PK)
+
+plano_id (FK → PLANO_CARREIRA)
+
+colaborador_id (FK → COLABORADOR)
+
+data_inicio
+
+data_fim
+
+status
+
+created_at
+
+updated_at
+
+Restrição:
+
+(plano_id, colaborador_id) deve ser ÚNICO
+
+✅ Observações Arquiteturais
+
+Modelagem alinhada ao ciclo de vida completo da avaliação
+
+Estrutura preparada para:
+
+Nine Box dinâmico
+
+Mérito automatizado
+
+Progressão de carreira
+
+Compatível com LGPD (dados sensíveis centralizados e controlados)
