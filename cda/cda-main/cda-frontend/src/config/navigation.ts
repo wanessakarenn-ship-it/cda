@@ -1,20 +1,4 @@
-/**
- * Configuração de Navegação CDA 2026
- * Controla o menu lateral conforme o perfil vindo do BACKEND
- *
- * 🔐 O BACKEND define:
- *  - quem é o usuário
- *  - qual o perfil (ADMIN | GESTOR | COLABORADOR)
- *
- * 🎯 O FRONTEND decide:
- *  - quais menus aparecem
- *  - quais rotas são acessíveis
- */
 
-/**
- * Papéis do sistema
- * ⚠️ Deve refletir EXATAMENTE o que a API retorna
- * Ex: /auth/login | /usuarios/me
  */
 export type UserRole = 'ADMIN' | 'GESTOR' | 'COLABORADOR';
 
@@ -75,20 +59,3 @@ export const NAV_ITEMS: NavItem[] = [
     roles: ['ADMIN'],
   },
 ];
-
-/**
- * =====================================================
- * FILTRAGEM POR PERFIL
- * =====================================================
- * 🔐 Backend define o perfil
- * 👁️ Frontend apenas exibe o permitido
- */
-export const getVisibleNavItems = (
-  userRole?: UserRole
-): NavItem[] => {
-  if (!userRole) return [];
-
-  return NAV_ITEMS.filter(item =>
-    item.roles.includes(userRole)
-  );
-};
